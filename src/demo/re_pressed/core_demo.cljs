@@ -22,7 +22,13 @@
 
 (defn ^:export init []
   (re-frame/dispatch-sync [::events/initialize-db])
-  (re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keydown"])
+  (js/console.info "Initializing:"
+                   (clj->js [::rp/add-keyboard-event-listener "keydown"
+                             :clear-on-success-event-match true
+                             :prefix :application.keyboard/all]))
+  (re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keydown"
+                           :clear-on-success-event-match true
+                           :prefix :application.keyboard/all])
   #_(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keypress"])
   #_(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keyup"])
   (routes/app-routes)

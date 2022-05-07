@@ -60,7 +60,7 @@
 
        :always-listen-keys [;; enter
                             {:keyCode 13}]
-       }])
+       :prefix :application.keyboard/all}])
 
     #_(rf/dispatch
      [::rp/set-keypress-rules
