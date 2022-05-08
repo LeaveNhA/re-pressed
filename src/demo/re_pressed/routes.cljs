@@ -27,7 +27,8 @@
 
     (rf/dispatch
      [::rp/set-keydown-rules
-      {:event-keys [[[::events/log "Keydown was pressed"]
+      {:prefix :application.keyboard/all
+       :event-keys [[[::events/log "Keydown was pressed"]
                      ;; enter
                      [{:keyCode 13}]]
 
@@ -45,8 +46,7 @@
                     [[::events/card-move-up]
                      ;; up arrow or w
                      [{:keyCode 38}]
-                     [{:keyCode 87}]]
-                    ]
+                     [{:keyCode 87}]]]
 
        :clear-keys [;; escape
                     [{:keyCode 27}]
@@ -59,8 +59,7 @@
                                :ctrlKey true}]
 
        :always-listen-keys [;; enter
-                            {:keyCode 13}]
-       :prefix :application.keyboard/all}])
+                            {:keyCode 13}]}])
 
     #_(rf/dispatch
      [::rp/set-keypress-rules

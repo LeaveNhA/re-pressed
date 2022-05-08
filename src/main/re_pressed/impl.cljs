@@ -138,7 +138,7 @@
   (str ns-root "keyboard-event"))
 
  (fn [{event-type :event-type {:keys [prefix] :as arguments} :arguments}]
-   (js/console.info "@Keyboard-event:" (clj->js arguments) "\nprefix:" prefix)
+   #_(js/console.info "@Keyboard-event:" (clj->js arguments) "\nprefix:" prefix)
    (register-subs event-type prefix)
    (register-events event-type prefix)
    (register-effects event-type)
@@ -179,8 +179,6 @@
                   event-keys  @(rf/subscribe [(ns-keyword "-event-keys")])
                   clear-keys  @(rf/subscribe [(ns-keyword "-clear-keys")])
 
-                  _ (js/console.info (clj->js [recent-keys event-keys clear-keys]))
-
                   recent-key (last recent-keys)
 
                   is-key-sequence? (fn [key-maps]
@@ -212,8 +210,7 @@
 
               (cond
                 clear?
-                (do (js/console.info "Clearing keys.")
-                    (rf/dispatch-sync [(ns-keyword "-clear-keys")]))
+                (rf/dispatch-sync [(ns-keyword "-clear-keys")])
 
                 event?
                 (do
