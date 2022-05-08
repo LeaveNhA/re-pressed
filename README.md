@@ -60,47 +60,98 @@ application *first* loads.
 There are three options, and you can use more than one if you'd like:
 
 ```clojure
-(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keydown"])
+(re-frame/dispatch-sync [:prefix :application/keyboard
+                        ;; keydown
+                         ::rp/add-keyboard-event-listener "keydown"])
 
 ;; or
-(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keypress"])
+(re-frame/dispatch-sync [:prefix :application/keyboard
+                        ;; keypress
+                         ::rp/add-keyboard-event-listener "keypress"])
 
 ;; or
-(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keyup"])
+(re-frame/dispatch-sync [:prefix :application/keyboard
+                        ;; keyup
+                         ::rp/add-keyboard-event-listener "keyup"])
 ```
 
-### Event Listeners Options
+### Event Listener Options
 
- `::rp/add-keyboard-event-listener` can have optional values to set
- behaviors of event-listeners after the event-type.
+`::rp/add-keyboard-event-listener` can have optional values to set
+behaviors of event-listeners after the event-type.
 
- Such as;
+#### Mandatories
 
- #### Clear `keydown-keys` with Matched Event
+##### Prefix: prefix of DB values
 
- `:clear-on-success-event-match` option is used to remove leftover
- key-presses after a success match of events.
+`:prefix` is mandatory on both `::rp/add-keyboard-event-listener` and rules setters (`::rp/set-keydown-rules` `::rp/set-keypress-rules` `::rp/set-keyup-rules`) you should be consistent while passing prefix.
 
- Default: `false`.
+You can referance the each event's section.
 
- ``` clojure
- (re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keydown" :clear-on-success-event-match true])
 
- ;; or
- (re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keypress" :clear-on-success-event-match true])
+``` clojure
+;; While initializing Keyboard Event Listener:
+(def prefix :com.flexiana/keyboard)
+(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keydown" 
+                         :prefix prefix])
+,,,
+(re-frame/dispatch
+ [::rp/set-keydown-rules
+   ;; it is important to be the same prefix
+  {:prefix prefix
+   :event-keys [,,,]
+   :clear-keys [,,,]
+   :always-listen-keys [,,,]
+   :prevent-default-keys [,,,]}])
 
- ;; or
- (re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keyup" :clear-on-success-event-match true])
+;; or
+(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keypress" 
+                         :prefix :com.flexiana/keyboard])
+,,,
 
- ```
+;; or
+(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keyup" 
+                         :prefix :com.flexiana/keyboard])
+,,,
+```
+
+
+#### Optionals
+
+##### Clear `keydown-keys` with Matched Event
+
+`:clear-on-success-event-match` option is used to remove leftover
+key-presses after a success match of events.
+
+Default: `false`.
+
+``` clojure
+(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keydown" 
+                         :prefix :bla 
+                         ;; option-key:                flag
+                         :clear-on-success-event-match true])
+
+;; or
+(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keypress" 
+                         :prefix :bla 
+                         :clear-on-success-event-match true])
+
+;; or
+(re-frame/dispatch-sync [::rp/add-keyboard-event-listener "keyup" 
+                         :prefix :bla 
+                         :clear-on-success-event-match true])
+
+```
 
 
 ### `::rp/set-keydown-rules`
 
-`::rp/set-keydown-rules` takes a hash-map of `:event-keys`,
+`::rp/set-keydown-rules` takes a hash-map of `:prefix`, `:event-keys`,
 `:clear-keys`, `:always-listen-keys`, and `:prevent-default-keys` and
 listens for *keydown* events.
 
+- For `:prefix`, this prefix is encapsulate your whole keyboard oriented
+  business-logic in one keyword under your application DB.
 - For `:event-keys`, there is a vector of *event + key combo* vectors.
   If any of the key combos are true, then the event will get
   dispatched.
@@ -266,14 +317,15 @@ want to handle keyboard events differently on each page.
 
 ## Questions
 
-If you have questions, I can usually be found hanging out in
-the [clojurians](http://clojurians.net/) #reagent slack channel (my
-handle is [@gadfly361](https://twitter.com/gadfly361)).
+If you have questions, you can find social links on my profile 
+[@leavenha](https://github.com/LeaveNhA).
 
 ## License
 
 Copyright © 2018 Matthew Jaoudi
 
 Copyright © 2019 Arne Schlüter
+
+Copyright © 2022 Seçkin KÜKRER
 
 Distributed under the The MIT License (MIT).

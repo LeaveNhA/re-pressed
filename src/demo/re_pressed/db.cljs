@@ -4,5 +4,4 @@
   {:name "re-frame"
 
    :cards             (mapv #(str "card" %) (range 8))
-   :card-active-index 0
-   })
+   :card-active-index 0})

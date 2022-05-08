@@ -1,14 +1,19 @@
-(defproject re-pressed "0.3.1"
+(defproject org.clojars.scknkkrer/re-pressed "0.0.35"
   :description "A keyboard events library for re-frame"
-  :url "https://github.com/gadfly361/re-pressed"
+  :url "https://github.com/leavenha/re-pressed"
   :license {:name "MIT"}
   :scm {:name "git"
-        :url  "https://github.com/gadfly361/re-pressed"}
+        :url  "https://github.com/leavenha/re-pressed"}
 
   :dependencies [[org.clojure/clojure "1.10.1" :scope "provided"]
                  [org.clojure/clojurescript "1.10.520" :scope "provided"]
                  [reagent "0.8.1" :scope "provided"]
                  [re-frame "0.10.9" :scope "provided"]]
+
+  :pom-addition [:developers [:developer
+                              [:name "Seçkin KÜKRER"]
+                              [:url "leavenha.github.io"]]]
+
 
   :plugins [[lein-cljsbuild "1.1.5"]]
 
@@ -51,5 +56,4 @@
                      :optimizations   :advanced
                      :closure-defines {goog.DEBUG false}
                      :pretty-print    false}}
-     ]}
-   )
+     ]})

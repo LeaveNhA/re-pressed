@@ -45,45 +45,42 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Subs
 
-(defn register-subs [event-type]
+(defn register-subs [event-type prefix]
   (let [ns-keyword (->ns-keyword event-type)]
     (rf/reg-sub
      (ns-keyword "-keys")
      (fn [db _]
-       (get-in db [(ns-keyword) :keys])))
+       (get-in db [prefix (ns-keyword) :keys])))
 
     (rf/reg-sub
      (ns-keyword "-event-keys")
      (fn [db _]
-       (get-in db [(ns-keyword) :event-keys])))
+       (get-in db [prefix (ns-keyword) :event-keys])))
 
     (rf/reg-sub
      (ns-keyword "-clear-keys")
      (fn [db _]
-       (get-in db [(ns-keyword) :clear-keys])))
+       (get-in db [prefix (ns-keyword) :clear-keys])))
 
     (rf/reg-sub
      (ns-keyword "-always-listen-keys")
      (fn [db _]
-       (get-in db [(ns-keyword) :always-listen-keys])))
+       (get-in db [prefix (ns-keyword) :always-listen-keys])))
 
     (when (= "keydown" event-type)
       (rf/reg-sub
        (ns-keyword "-prevent-default-keys")
        (fn [db _]
-         (get-in db [(ns-keyword) :prevent-default-keys]))))
-    ))
-
-
+         (get-in db [prefix (ns-keyword) :prevent-default-keys]))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Events
 
-(defn- ->set-key! [event-type]
+(defn- ->set-key! [event-type prefix]
   (let [ns-keyword (->ns-keyword event-type)]
     (fn set-key!
       [{:keys [db]} [_ key-map]]
-      {:db (update-in db [(ns-keyword) :keys]
+      {:db (update-in db [prefix (ns-keyword) :keys]
                       (fn [key-maps]
                         (let [keys (if key-map
                                      (conj (or key-maps
@@ -94,11 +91,11 @@
                           (into []
                                 (take-last max-record keys)))))})))
 
-(defn- ->clear-keys! [event-type]
+(defn- ->clear-keys! [event-type prefix]
   (let [ns-keyword (->ns-keyword event-type)]
     (fn clear-keys!
       [{:keys [db]} [_ key-map]]
-      {:db (assoc-in db [(ns-keyword)
+      {:db (assoc-in db [prefix (ns-keyword)
                          :keys] [])})))
 
 
@@ -109,14 +106,14 @@
     {k e}))
 
 
-(defn register-events [event-type]
+(defn register-events [event-type prefix]
   (let [ns-keyword (->ns-keyword event-type)]
 
     (rf/reg-event-fx  (ns-keyword "-set-key")
-                      (->set-key! event-type))
+                      (->set-key! event-type prefix))
 
     (rf/reg-event-fx (ns-keyword "-clear-keys")
-                     (->clear-keys! event-type))
+                     (->clear-keys! event-type prefix))
 
     (when (= "keydown" event-type)
       (rf/reg-event-fx (ns-keyword "-prevent-default-keys")
@@ -140,9 +137,10 @@
  (keyword
   (str ns-root "keyboard-event"))
 
- (fn [{:keys [event-type arguments]}]
-   (register-subs event-type)
-   (register-events event-type)
+ (fn [{event-type :event-type {:keys [prefix] :as arguments} :arguments}]
+   #_(js/console.info "@Keyboard-event:" (clj->js arguments) "\nprefix:" prefix)
+   (register-subs event-type prefix)
+   (register-events event-type prefix)
    (register-effects event-type)
 
    (let [{:keys [clear-on-success-event-match]} arguments]
