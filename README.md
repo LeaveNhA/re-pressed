@@ -11,8 +11,10 @@
 Re-pressed is a library that handles keyboard events
 for [re-frame](https://github.com/Day8/re-frame) applications.
 
+This fork is under development and can be fetched by:
+
 ```clojure
-[re-pressed "0.3.1"]
+[org.clojars.scknkkrer/re-pressed "0.0.35"]
 ```
 
 Note: if you are upgrading re-pressed from an earlier version, there was a breaking change - all instances of `:which` should be replaced with `:keyCode`. However, the upside is re-pressed no longer relies on jQuery!
