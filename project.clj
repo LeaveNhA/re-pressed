@@ -1,4 +1,4 @@
-(defproject org.clojars.scknkkrer/re-pressed "0.0.29"
+(defproject org.clojars.scknkkrer/re-pressed "0.0.35"
   :description "A keyboard events library for re-frame"
   :url "https://github.com/leavenha/re-pressed"
   :license {:name "MIT"}
